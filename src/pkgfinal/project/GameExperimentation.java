@@ -5,6 +5,7 @@ import java.awt.Graphics;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -33,6 +34,19 @@ public class GameExperimentation extends JComponent {
         return randCol;
 
     }
+
+    public static int RandomX(int dongSize) {
+        double rand = (Math.random() * ((WIDTH-dongSize) - 0) + 0);
+        int random = (int) rand;
+        return random;
+
+    }
+
+    public static int RandomY(int dongSize) {
+        double rand = (Math.random() * ((HEIGHT-dongSize) - 0) + 0);
+        int random = (int) rand;
+        return random;
+    }
     // Height and Width of our game
     static final int WIDTH = 800;
     static final int HEIGHT = 600;
@@ -43,6 +57,8 @@ public class GameExperimentation extends JComponent {
     long desiredFPS = 60;
     long desiredTime = (1000) / desiredFPS;
     // YOUR GAME VARIABLES WOULD GO HERE
+    //boost pads
+    int count = 0;
     int cubeX = 400;
     int cubeY = 300;
     int cube2X = 300;
@@ -99,10 +115,17 @@ public class GameExperimentation extends JComponent {
     boolean win1 = false;
     boolean win2 = false;
     boolean restart = false;
-
+    int dongSize = 40;
+    boolean expandDong = true;
+    Rectangle pad1 = new Rectangle(RandomX(dongSize), RandomY(dongSize), dongSize, dongSize);
+    Rectangle pad2 = new Rectangle(RandomX(dongSize), RandomY(dongSize), dongSize, dongSize);
+    Rectangle pad3 = new Rectangle(RandomX(dongSize), RandomY(dongSize), dongSize, dongSize);
+    Rectangle pad4 = new Rectangle(RandomX(dongSize), RandomY(dongSize), dongSize, dongSize);
+    boolean seizure = true;
     // GAME VARIABLES END HERE   
     // Constructor to create the Frame and place the panel in
     // You will learn more about this in Grade 12 :)
+
     public GameExperimentation() {
         // creates a windows to show my game
         JFrame frame = new JFrame(title);
@@ -158,6 +181,7 @@ public class GameExperimentation extends JComponent {
             g.setColor(RandomCol());
             g.fillRect(200, 400, 200, 200);
 
+
             g.setColor(RandomCol());
             g.fillRect(400, 0, 200, 200);
             g.setColor(RandomCol());
@@ -171,6 +195,19 @@ public class GameExperimentation extends JComponent {
             g.fillRect(600, 200, 200, 200);
             g.setColor(RandomCol());
             g.fillRect(600, 400, 200, 200);
+            if (!seizure) {
+                g.setColor(Color.WHITE);
+                g.fillRect(0, 0, WIDTH, HEIGHT);
+            }
+            g.setColor(RandomCol());
+            if (!seizure) {
+                g.setColor(Color.YELLOW);
+            }
+            g.fillRect(pad1.x, pad1.y, pad1.height, pad1.width);
+            g.fillRect(pad2.x, pad2.y, pad2.height, pad2.width);
+            g.fillRect(pad3.x, pad3.y, pad3.height, pad3.width);
+            g.fillRect(pad4.x, pad4.y, pad4.height, pad4.width);
+
             g.setColor(itCol1);
             g.fillRect(cubeX, cubeY, 20, 20);
             g.setColor(itCol2);
@@ -181,6 +218,8 @@ public class GameExperimentation extends JComponent {
             g.drawString(timeLeft, 750, 25);
             g.drawString(player1It, 10, 25);
             g.drawString(player2It, 10, 50);
+
+
         }
         if (win1) {
             g.drawImage(winI1, 0, 0, this);
@@ -218,63 +257,64 @@ public class GameExperimentation extends JComponent {
             // all your game rules and move is done in here
             // GAME LOGIC STARTS HERE 
             //restarting the game
-            if (restart&&(win1||win2)) {
-                 cubeX = 400;
-                 cubeY = 300;
-                 cube2X = 300;
-                 cube2Y = 200;
-                 up = false;
-                 down = false;
-                 left = false;
-                 right = false;
-                 up2 = false;
-                 down2 = false;
-                 left2 = false;
-                 right2 = false;
-                 one = "1";
-                 two = "2";
-                 frameCounter = 0;
-                 frameToSecond = frameCounter / 60;
-                 timeLeft = "60";
-                 it = true;
-                 red1Var = 255;
-                 red2Var = 255;
-                 green1Var = 255;
-                 green2Var = 255;
-                 itCol1 = new Color(red1Var, green1Var, 0);
-                 itCol2 = new Color(red2Var, green2Var, 0);
-                 itDelay = 60;
-                 it1 = 0;
-                 it2 = 0;
-                 speed1 = 0;
-                 speed2 = 0;
-                 boost1 = false;
-                 boost2 = false;
-                 boost1Timer = 0;
-                 boost2Timer = 0;
-                 pause = true;
-                 bob = imageHelper.LoadImage("TitleScreen.jpg");
-                 winI1 = imageHelper.LoadImage("VictoryOne.png");
-                 winI2 = imageHelper.LoadImage("VictoryTwo.png");
-                 player1It = "Player one has been it for " + it1 / 60 + " seconds";
-                 player2It = "Player two has been it for" + it2 / 60 + " seconds";
-                 charA1 = false;
-                 charB1 = false;
-                 charC1 = false;
-                 charD1 = false;
-                 charA2 = false;
-                 charB2 = false;
-                 charC2 = false;
-                 charD2 = false;
-                 boost1Length = 0;
-                 boost2Length = 0;
-                 boostMulti1 = 0;
-                 boostMulti2 = 0;
-                 c1 = 0;
-                 c2 = 0;
-                 win1 = false;
-                 win2 = false;
-                System.out.println("game should restart here");
+            if (restart && (win1 || win2)) {
+                cubeX = 400;
+                cubeY = 300;
+                cube2X = 300;
+                cube2Y = 200;
+                up = false;
+                down = false;
+                left = false;
+                right = false;
+                up2 = false;
+                down2 = false;
+                left2 = false;
+                right2 = false;
+                one = "1";
+                two = "2";
+                frameCounter = 0;
+                frameToSecond = frameCounter / 60;
+                timeLeft = "60";
+                it = true;
+                red1Var = 255;
+                red2Var = 255;
+                green1Var = 255;
+                green2Var = 255;
+                itCol1 = new Color(red1Var, green1Var, 0);
+                itCol2 = new Color(red2Var, green2Var, 0);
+                itDelay = 60;
+                it1 = 0;
+                it2 = 0;
+                speed1 = 0;
+                speed2 = 0;
+                boost1 = false;
+                boost2 = false;
+                boost1Timer = 0;
+                boost2Timer = 0;
+                pause = true;
+                bob = imageHelper.LoadImage("TitleScreen.jpg");
+                winI1 = imageHelper.LoadImage("VictoryOne.png");
+                winI2 = imageHelper.LoadImage("VictoryTwo.png");
+                player1It = "Player one has been it for " + it1 / 60 + " seconds";
+                player2It = "Player two has been it for" + it2 / 60 + " seconds";
+                charA1 = false;
+                charB1 = false;
+                charC1 = false;
+                charD1 = false;
+                charA2 = false;
+                charB2 = false;
+                charC2 = false;
+                charD2 = false;
+                boost1Length = 0;
+                boost2Length = 0;
+                boostMulti1 = 0;
+                boostMulti2 = 0;
+                c1 = 0;
+                c2 = 0;
+                win1 = false;
+                win2 = false;
+                dongSize = 40;
+                expandDong = true;
             }
             //character stats
 
@@ -356,15 +396,28 @@ public class GameExperimentation extends JComponent {
             //character stats done
 
             if (!pause && c1 > 0 && c2 > 0) {
-
+                if (count == 0) {
+                    if (expandDong&&dongSize<120) {
+                        dongSize += dongSize/4;
+                    }
+                    pad1 = new Rectangle(RandomX(dongSize), RandomY(dongSize), dongSize, dongSize);
+                    pad2 = new Rectangle(RandomX(dongSize), RandomY(dongSize), dongSize, dongSize);
+                    pad3 = new Rectangle(RandomX(dongSize), RandomY(dongSize), dongSize, dongSize);
+                    pad4 = new Rectangle(RandomX(dongSize), RandomY(dongSize), dongSize, dongSize);
+                    count++;
+                }
+                count++;
+                if (count == 240) {
+                    count = 0;
+                }
                 player1It = "Player one has been it for " + it1 / 60 + " seconds";
                 player2It = "Player two has been it for " + it2 / 60 + " seconds";
 
-                if (it2 / 60 >= 31) {
+                if (it2 / 60 >= 31||(frameToSecond==59&&it2>it1)) {
                     pause = true;
                     win1 = true;
                 }
-                if (it1 / 60 >= 31) {
+                if (it1 / 60 >= 31||(frameToSecond==59&&it1>it2)) {
                     pause = true;
                     win2 = true;
                 }
@@ -427,6 +480,34 @@ public class GameExperimentation extends JComponent {
                         boost2Timer = 0;
                     }
                 }
+                
+                //boost pads logic
+                if (pad1.intersects(cubeX, cubeY, 20, 20)) {
+                    speed1 = speed1 * 2;
+                }
+                if (pad1.intersects(cube2X, cube2Y, 20, 20)) {
+                    speed2 = speed2 * 2;
+                }
+                if (pad2.intersects(cubeX, cubeY, 20, 20)) {
+                    speed1 = speed1 * 2;
+                }
+                if (pad2.intersects(cube2X, cube2Y, 20, 20)) {
+                    speed2 = speed2 * 2;
+                }
+                if (pad3.intersects(cubeX, cubeY, 20, 20)) {
+                    speed1 = speed1 * 2;
+                }
+                if (pad3.intersects(cube2X, cube2Y, 20, 20)) {
+                    speed2 = speed2 * 2;
+                }
+                if (pad4.intersects(cubeX, cubeY, 20, 20)) {
+                    speed1 = speed1 * 2;
+                }
+                if (pad4.intersects(cube2X, cube2Y, 20, 20)) {
+                    speed2 = speed2 * 2;
+                }
+                //logic ends
+                
                 //moving the first cube
                 if (up) {
                     cubeY = cubeY - speed1;
@@ -481,6 +562,7 @@ public class GameExperimentation extends JComponent {
                 }
 
                 //hit detection
+
                 if (cubeX <= cube2X && cubeX + 20 >= cube2X && cubeY <= cube2Y && cubeY + 20 >= cube2Y) {
 
                     if (itDelay >= 60) {
@@ -667,6 +749,12 @@ public class GameExperimentation extends JComponent {
             }
             if (code == KeyEvent.VK_R) {
                 restart = true;
+            }
+            if (code == KeyEvent.VK_N) {
+                seizure = true;
+            }
+            if (code == KeyEvent.VK_M) {
+                seizure = false;
             }
         }
 
